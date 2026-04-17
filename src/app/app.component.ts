@@ -1,29 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { DataService } from './shared/data.service';
+import { Component } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  isAuthPage = false;
 
-  details: any;
-  
-  name = new FormControl('', Validators.required);
+  constructor(private router: Router) {
+    this.updateRouteFlags(this.router.url);
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.updateRouteFlags(event.urlAfterRedirects);
+      }
+    });
+  }
 
-  constructor(private dataService: DataService) { }
-
-  ngOnInit() { }
-
-  getBlogdetails() {
-    this.dataService
-      .getBlogDetails(this.name.value)
-      .pipe()
-      .subscribe((res) => {
-        console.log(res);
-        this.details = res;
-      });
+  private updateRouteFlags(url: string): void {
+    const cleanUrl = url.split('?')[0].split('#')[0];
+    this.isAuthPage = ['/login', '/register', '/forgot-password', '/reset-password'].includes(cleanUrl);
   }
 }

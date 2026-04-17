@@ -1,0 +1,99 @@
+<div class="container mx-auto px-4 py-8 bg-background min-h-screen transition-colors duration-200">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-surface rounded-lg shadow-lg overflow-hidden border border-border">
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-main">Create New Post</h1>
+          <button (click)="cancel()" class="text-muted hover:text-main">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form [formGroup]="postForm" (ngSubmit)="submitPost()">
+          <!-- Title -->
+          <div class="mb-6">
+            <label for="title" class="block text-sm font-semibold text-main mb-2">Title</label>
+            <input 
+              type="text" 
+              id="title" 
+              formControlName="title"
+              placeholder="Post title (min 5 characters)"
+              class="w-full px-4 py-3 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xl font-bold"
+              [ngClass]="{'border-red-500': postForm.get('title')?.invalid && postForm.get('title')?.touched}"
+            >
+            <div *ngIf="postForm.get('title')?.invalid && postForm.get('title')?.touched" class="text-red-500 text-xs mt-1">
+              Title is required and should be at least 5 characters.
+            </div>
+          </div>
+
+          <!-- Cover Image URL -->
+          <div class="mb-6">
+            <label for="coverImage" class="block text-sm font-semibold text-main mb-2">Cover Image URL (Optional)</label>
+            <input 
+              type="text" 
+              id="coverImage" 
+              formControlName="coverImage"
+              placeholder="https://example.com/image.jpg"
+              class="w-full px-4 py-2 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
+            >
+          </div>
+
+          <!-- Content -->
+          <div class="mb-6">
+            <label for="content" class="block text-sm font-semibold text-main mb-2">Content (Markdown supported)</label>
+            <textarea 
+              id="content" 
+              formControlName="content"
+              rows="15"
+              placeholder="Write your post content here..."
+              class="w-full px-4 py-3 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono"
+              [ngClass]="{'border-red-500': postForm.get('content')?.invalid && postForm.get('content')?.touched}"
+            ></textarea>
+            <div *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched" class="text-red-500 text-xs mt-1">
+              Content is required.
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="mb-6">
+            <label for="tags" class="block text-sm font-semibold text-main mb-2">Tags (comma separated)</label>
+            <input 
+              type="text" 
+              id="tags" 
+              formControlName="tags"
+              placeholder="javascript, angular, tutorial"
+              class="w-full px-4 py-2 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center space-x-4 pt-6 border-t border-border">
+            <button 
+              type="submit" 
+              [disabled]="postForm.invalid || submitting"
+              class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:opacity-90 focus:outline-none disabled:opacity-50 transition-all"
+            >
+              <span *ngIf="!submitting">Publish Post</span>
+              <span *ngIf="submitting" class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Publishing...
+              </span>
+            </button>
+            <button 
+              type="button" 
+              (click)="cancel()"
+              class="px-8 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none transition-all"
+            >
+              Save Draft
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,112 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row">
+    <!-- Left Sidebar -->
+    <div class="hidden md:block w-1/4 pr-6">
+      <div class="bg-surface rounded-lg shadow p-5 mb-5 border border-border">
+        <h2 class="text-xl font-bold mb-4 text-main">DEV Community</h2>
+        <p class="text-muted mb-4">A constructive and inclusive social network for software developers.</p>
+        <div class="space-y-2">
+          <a routerLink="/" class="block hover:bg-background p-2 rounded-md transition-colors text-muted hover:text-main">🏠 Home</a>
+          <a routerLink="/reading-list" class="block hover:bg-background p-2 rounded-md transition-colors text-muted hover:text-main">📚 Reading List</a>
+          <a routerLink="/tags" class="block hover:bg-background p-2 rounded-md transition-colors text-muted hover:text-main">#️⃣ Tags</a>
+          <a routerLink="/about" class="block hover:bg-background p-2 rounded-md transition-colors text-muted hover:text-main">📖 About</a>
+          <a routerLink="/settings" class="block hover:bg-background p-2 rounded-md transition-colors text-muted hover:text-main">⚙️ Settings</a>
+        </div>
+      </div>
+
+      <div class="bg-surface rounded-lg shadow p-5 border border-border">
+        <h3 class="text-lg font-bold mb-4 text-main">Popular Tags</h3>
+        <div class="space-y-2">
+          <button *ngFor="let tag of popularTags" type="button" (click)="filterByTag(tag)" class="block text-sm bg-transparent p-0" [ngClass]="{'text-primary font-bold': selectedTag === tag, 'text-muted hover:text-primary transition-colors': selectedTag !== tag}">#{{ tag }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full md:w-1/2">
+      <!-- Feed Tabs and Filters -->
+      <div class="bg-surface rounded-lg shadow mb-5 border border-border">
+        <div class="flex border-b border-border">
+          <button 
+            (click)="setSortBy('latest')"
+            class="py-4 px-6 font-semibold transition-colors border-b-2"
+            [ngClass]="sortBy === 'latest' ? 'text-primary border-primary' : 'text-muted border-transparent hover:text-main'">
+            Latest
+          </button>
+          <button 
+            (click)="setSortBy('top')"
+            class="py-4 px-6 font-semibold transition-colors border-b-2"
+            [ngClass]="sortBy === 'top' ? 'text-primary border-primary' : 'text-muted border-transparent hover:text-main'">
+            Top
+          </button>
+        </div>
+
+        <!-- Tag Filter Indicator -->
+        <div *ngIf="selectedTag" class="p-4 flex items-center justify-between bg-background">
+          <div class="flex items-center">
+            <span class="text-sm font-medium text-muted">Filtered by tag: </span>
+            <span class="ml-2 px-3 py-1 bg-primary/10 text-primary text-sm rounded-full font-bold">#{{ selectedTag }}</span>
+          </div>
+          <button (click)="clearTagFilter()" class="text-muted hover:text-red-500 transition-colors">
+            <span class="sr-only">Clear filter</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Posts -->
+      <div class="space-y-5">
+        <app-post-card *ngFor="let post of posts" [post]="post"></app-post-card>
+
+        <div *ngIf="loading" class="flex justify-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+
+        <div *ngIf="!loading && posts.length === 0" class="bg-surface rounded-lg shadow p-8 text-center border border-border">
+          <p class="text-muted">No posts found. Try another tag or check back later.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="hidden md:block w-1/4 pl-6">
+      <div class="bg-surface rounded-lg shadow p-5 mb-5 border border-border">
+        <h3 class="text-lg font-bold mb-4 text-main">DEV.TO Resources</h3>
+        <div class="space-y-3">
+          <a routerLink="/listings" class="block text-sm text-muted hover:text-primary transition-colors">Listings</a>
+          <a routerLink="/podcasts" class="block text-sm text-muted hover:text-primary transition-colors">Podcasts</a>
+          <a routerLink="/videos" class="block text-sm text-muted hover:text-primary transition-colors">Videos</a>
+          <a routerLink="/tags" class="block text-sm text-muted hover:text-primary transition-colors font-bold">All Tags</a>
+          <a routerLink="/about" class="block text-sm text-muted hover:text-primary transition-colors">FAQ</a>
+        </div>
+      </div>
+
+      <div class="bg-surface rounded-lg shadow p-5 mb-5 border border-border">
+        <h3 class="text-lg font-bold mb-4 text-main">Trending 🔥</h3>
+        <div class="space-y-4">
+          <a *ngFor="let item of trending; let i = index" routerLink="/about" class="block group text-main" [ngClass]="{'border-t border-border pt-4': i > 0}">
+            <h4 class="font-medium group-hover:text-primary transition-colors">{{ item.title }}</h4>
+            <p class="text-xs text-muted mt-1">{{ item.tags }}</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-surface rounded-lg shadow p-5 border border-border">
+        <h3 class="text-lg font-bold mb-4 text-main">Who to Follow</h3>
+        <div class="space-y-4">
+          <div *ngFor="let user of suggestedUsers" class="flex items-center">
+            <img [src]="user.avatar" alt="User Avatar" class="h-10 w-10 rounded-full mr-3 border border-border">
+            <div>
+              <h4 class="font-semibold text-main">{{ user.name }}</h4>
+              <p class="text-xs text-muted">{{ user.role }}</p>
+            </div>
+            <button (click)="followUser(user.username)" class="ml-auto px-3 py-1 text-sm font-semibold text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all">Follow</button>
+          </div>
+        </div>
+        <a routerLink="/tags" class="inline-block mt-3 text-sm text-primary hover:underline">See more suggestions</a>
+      </div>
+    </div>
+  </div>
+</div>

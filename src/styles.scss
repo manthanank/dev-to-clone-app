@@ -2,3 +2,97 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global Styles */
+:root {
+  --bg-app: #f3f4f6;
+  --bg-card: #ffffff;
+  --bg-header: #ffffff;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --border-main: #e5e7eb;
+  --primary: #7c3aed;
+  --accent: #2563eb;
+}
+
+.dark {
+  --bg-app: #000000;
+  --bg-card: #1f2937;
+  --bg-header: #111827;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --border-main: #374151;
+  --primary: #a78bfa;
+  --accent: #60a5fa;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  @apply bg-[var(--bg-app)] text-[var(--text-main)] transition-colors duration-200;
+}
+
+/* For better typography in content */
+.prose {
+  @apply text-gray-800 leading-relaxed;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold mt-6 mb-4;
+}
+
+.prose h3 {
+  @apply text-xl font-bold mt-6 mb-3;
+}
+
+.prose p {
+  @apply my-4;
+}
+
+.prose pre {
+  @apply bg-gray-100 p-4 rounded-md overflow-auto my-4;
+}
+
+.prose code {
+  @apply font-mono text-sm;
+}
+
+.prose ul, .prose ol {
+  @apply pl-6 my-4;
+}
+
+.prose ul {
+  @apply list-disc;
+}
+
+.prose ol {
+  @apply list-decimal;
+}
+
+.prose a {
+  @apply text-blue-600 hover:underline;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bg-app);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--text-muted);
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}

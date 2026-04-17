@@ -1,0 +1,32 @@
+<div class="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center bg-background p-4 text-center transition-colors duration-200">
+
+  <!-- 404 Decorative Number -->
+  <div class="select-none pointer-events-none">
+    <span class="text-[10rem] md:text-[14rem] font-extrabold text-primary opacity-10 leading-none block">404</span>
+  </div>
+
+  <!-- Heading & Message -->
+  <div class="space-y-4 -mt-8 mb-10">
+    <h1 class="text-4xl md:text-5xl font-bold text-main">Page not found</h1>
+    <p class="text-muted text-lg max-w-md mx-auto">
+      The page you're looking for doesn't exist or has been moved.
+      Maybe it went to a better place?
+    </p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+    <a routerLink="/" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1">
+      Back to Home
+    </a>
+    <a routerLink="/about" class="px-8 py-3 bg-surface border border-border text-main font-bold rounded-lg hover:bg-background transition-all">
+      Contact Support
+    </a>
+  </div>
+
+  <!-- Illustration -->
+  <div class="pt-12">
+    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80" alt="Lost in space" class="w-56 h-56 object-cover rounded-full mx-auto border-4 border-border shadow-2xl">
+  </div>
+
+</div>
