@@ -1,9 +1,9 @@
 # Dev.to Clone
 
-A feature-rich clone of the [Dev.to](https://dev.to) developer community platform, built with **Angular 19** and **Tailwind CSS 4**. It integrates with the official Dev.to API to fetch real articles, tags, and user data.
+A feature-rich clone of the [Dev.to](https://dev.to) developer community platform, built with **Angular 21** and **Tailwind CSS 4**. It integrates with the official Dev.to API to fetch real articles, tags, and user data.
 
-![Angular](https://img.shields.io/badge/Angular-19-DD0031?logo=angular&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.2-06B6D4?logo=tailwindcss&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -31,8 +31,8 @@ A feature-rich clone of the [Dev.to](https://dev.to) developer community platfor
 
 | Technology                                          | Version | Purpose                    |
 | --------------------------------------------------- | ------- | -------------------------- |
-| [Angular](https://angular.io/)                      | 19.x    | Frontend framework         |
-| [TypeScript](https://www.typescriptlang.org/)       | 5.8.x   | Type-safe JavaScript       |
+| [Angular](https://angular.io/)                      | 21.x    | Frontend framework         |
+| [TypeScript](https://www.typescriptlang.org/)       | 5.9.x   | Type-safe JavaScript       |
 | [Tailwind CSS](https://tailwindcss.com/)            | 4.2.x   | Utility-first CSS styling  |
 | [RxJS](https://rxjs.dev/)                           | 7.8.x   | Reactive programming       |
 | [Dev.to API](https://developers.forem.com/api/)     | v1      | Articles, users & tag data |
@@ -88,7 +88,7 @@ src/
 
 - [Node.js](https://nodejs.org/) v20 or higher
 - [npm](https://www.npmjs.com/) v10 or higher
-- [Angular CLI](https://angular.io/cli) v19
+- [Angular CLI](https://angular.io/cli) v21
 
 ### Installation
 
