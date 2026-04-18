@@ -11,7 +11,7 @@ import { DatePipe } from '@angular/common';
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss'],
+    styleUrls: ['./profile.component.css'],
     imports: [PostCardComponent, DatePipe]
 })
 export class ProfileComponent implements OnInit, OnDestroy {

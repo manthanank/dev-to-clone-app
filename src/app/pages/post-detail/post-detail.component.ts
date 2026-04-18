@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
     selector: 'app-post-detail',
     templateUrl: './post-detail.component.html',
-    styleUrls: ['./post-detail.component.scss'],
+    styleUrls: ['./post-detail.component.css'],
     imports: [NgClass, RouterLink, FormsModule, DatePipe]
 })
 export class PostDetailComponent implements OnInit, OnDestroy {

@@ -10,7 +10,7 @@ import { NgClass } from '@angular/common';
 @Component({
     selector: 'app-create-post',
     templateUrl: './create-post.component.html',
-    styleUrls: ['./create-post.component.scss'],
+    styleUrls: ['./create-post.component.css'],
     imports: [FormsModule, ReactiveFormsModule, NgClass]
 })
 export class CreatePostComponent implements OnInit, OnDestroy {

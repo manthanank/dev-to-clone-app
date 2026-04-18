@@ -22,7 +22,7 @@ interface SuggestedUser {
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
+    styleUrls: ['./home.component.css'],
     imports: [RouterLink, NgClass, PostCardComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy {

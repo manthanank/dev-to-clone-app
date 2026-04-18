@@ -13,7 +13,7 @@ interface TagInfo {
 @Component({
     selector: 'app-tags',
     templateUrl: './tags.component.html',
-    styleUrls: ['./tags.component.scss'],
+    styleUrls: ['./tags.component.css'],
     imports: [DecimalPipe]
 })
 export class TagsComponent implements OnInit {

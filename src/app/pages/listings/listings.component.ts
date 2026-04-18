@@ -15,7 +15,7 @@ interface ListingItem {
 @Component({
     selector: 'app-listings',
     templateUrl: './listings.component.html',
-    styleUrls: ['./listings.component.scss']
+    styleUrls: ['./listings.component.css']
 })
 export class ListingsComponent {
   listings: ListingItem[] = [];

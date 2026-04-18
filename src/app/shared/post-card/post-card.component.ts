@@ -8,7 +8,7 @@ import { NgClass, DatePipe } from '@angular/common';
 @Component({
     selector: 'app-post-card',
     templateUrl: './post-card.component.html',
-    styleUrls: ['./post-card.component.scss'],
+    styleUrls: ['./post-card.component.css'],
     imports: [NgClass, DatePipe]
 })
 export class PostCardComponent implements OnDestroy {

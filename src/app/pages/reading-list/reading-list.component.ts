@@ -8,7 +8,7 @@ import { PostCardComponent } from '../../shared/post-card/post-card.component';
 @Component({
     selector: 'app-reading-list',
     templateUrl: './reading-list.component.html',
-    styleUrls: ['./reading-list.component.scss'],
+    styleUrls: ['./reading-list.component.css'],
     imports: [RouterLink, PostCardComponent]
 })
 export class ReadingListComponent implements OnInit, OnDestroy {

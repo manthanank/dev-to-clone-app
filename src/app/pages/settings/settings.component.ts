@@ -8,7 +8,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.scss'],
+    styleUrls: ['./settings.component.css'],
     imports: [FormsModule, AsyncPipe]
 })
 export class SettingsComponent implements OnInit {
