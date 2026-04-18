@@ -27,97 +27,105 @@
             [(ngModel)]="searchQuery"
             (keyup.enter)="onSearch($event)"
             class="pl-10 pr-4 py-2 rounded-md border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64"
-          >
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            >
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
           </div>
-        </div>
 
-        <!-- Create Post Button (auth only) -->
-        <a *ngIf="currentUser$ | async" routerLink="/new" class="hidden md:block px-4 py-2 bg-primary text-white font-semibold rounded-md hover:opacity-90 transition-opacity">Create Post</a>
+          <!-- Create Post Button (auth only) -->
+          @if (currentUser$ | async) {
+            <a routerLink="/new" class="hidden md:block px-4 py-2 bg-primary text-white font-semibold rounded-md hover:opacity-90 transition-opacity">Create Post</a>
+          }
 
-        <!-- Dark Mode Toggle -->
-        <button
-          (click)="toggleTheme()"
-          class="p-2 rounded-md text-muted hover:text-main hover:bg-background transition-colors"
-          [title]="(isDarkMode$ | async) ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-          <svg *ngIf="!(isDarkMode$ | async)" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-          <svg *ngIf="(isDarkMode$ | async)" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        </button>
-
-        <!-- Auth Buttons (Guest) -->
-        <div class="hidden md:flex items-center space-x-2" *ngIf="!(currentUser$ | async)">
-          <a routerLink="/login" class="px-4 py-2 text-muted hover:text-main hover:bg-background rounded-md transition-colors">Log in</a>
-          <a routerLink="/register" class="px-4 py-2 border border-primary text-primary font-bold rounded-md hover:bg-primary hover:text-white transition-all">Create account</a>
-        </div>
-
-        <!-- User Menu (Auth) -->
-        <ng-container *ngIf="currentUser$ | async as user">
-          <!-- Notifications -->
-          <button class="text-muted hover:text-main focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
+          <!-- Dark Mode Toggle -->
+          <button
+            (click)="toggleTheme()"
+            class="p-2 rounded-md text-muted hover:text-main hover:bg-background transition-colors"
+            [title]="(isDarkMode$ | async) ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            @if (!(isDarkMode$ | async)) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            }
+            @if ((isDarkMode$ | async)) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            }
           </button>
 
-          <div class="relative flex items-center space-x-4">
-            <a [routerLink]="['/user', user.username]" class="flex items-center focus:outline-none transform hover:scale-105 transition-transform">
-              <img [src]="user.avatar" [alt]="user.name" class="w-8 h-8 rounded-full border border-border">
-            </a>
-            <button (click)="logout()" class="text-muted hover:text-red-500 font-semibold text-sm transition-colors focus:outline-none">Sign out</button>
+          <!-- Auth Buttons (Guest) -->
+          @if (!(currentUser$ | async)) {
+            <div class="hidden md:flex items-center space-x-2">
+              <a routerLink="/login" class="px-4 py-2 text-muted hover:text-main hover:bg-background rounded-md transition-colors">Log in</a>
+              <a routerLink="/register" class="px-4 py-2 border border-primary text-primary font-bold rounded-md hover:bg-primary hover:text-white transition-all">Create account</a>
+            </div>
+          }
+
+          <!-- User Menu (Auth) -->
+          @if (currentUser$ | async; as user) {
+            <!-- Notifications -->
+            <button class="text-muted hover:text-main focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </button>
+            <div class="relative flex items-center space-x-4">
+              <a [routerLink]="['/user', user.username]" class="flex items-center focus:outline-none transform hover:scale-105 transition-transform">
+                <img [src]="user.avatar" [alt]="user.name" class="w-8 h-8 rounded-full border border-border">
+              </a>
+              <button (click)="logout()" class="text-muted hover:text-red-500 font-semibold text-sm transition-colors focus:outline-none">Sign out</button>
+            </div>
+          }
+
+          <!-- Mobile Menu Button -->
+          <button
+            (click)="toggleMobileMenu()"
+            class="md:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Content -->
+    @if (isMobileMenuOpen) {
+      <div class="md:hidden bg-header border-t border-border py-4 px-4 space-y-4 shadow-lg animate-fade-in text-main">
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch($event); toggleMobileMenu()"
+            class="w-full pl-10 pr-4 py-2 rounded-md border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
           </div>
-        </ng-container>
-
-        <!-- Mobile Menu Button -->
-        <button
-          (click)="toggleMobileMenu()"
-          class="md:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mobile Menu Content -->
-  <div *ngIf="isMobileMenuOpen" class="md:hidden bg-header border-t border-border py-4 px-4 space-y-4 shadow-lg animate-fade-in text-main">
-    <div class="relative">
-      <input
-        type="text"
-        placeholder="Search..."
-        [(ngModel)]="searchQuery"
-        (keyup.enter)="onSearch($event); toggleMobileMenu()"
-        class="w-full pl-10 pr-4 py-2 rounded-md border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-      >
-      <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </div>
-    </div>
-    <nav class="flex flex-col space-y-2">
-      <ng-container *ngIf="currentUser$ | async as user; else guestMobileNav">
-        <a routerLink="/" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🏠 Home</a>
-        <a routerLink="/reading-list" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">📚 Reading List</a>
-        <a routerLink="/tags" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">#️⃣ Tags</a>
-        <a routerLink="/about" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">📖 About</a>
-        <a routerLink="/settings" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">⚙️ Settings</a>
-        <button (click)="logout(); toggleMobileMenu()" class="text-left text-muted hover:text-red-500 hover:bg-background px-3 py-2 rounded-md transition-colors font-semibold">🚪 Sign out</button>
-        <a routerLink="/new" (click)="toggleMobileMenu()" class="bg-primary text-white font-semibold px-3 py-2 rounded-md text-center mt-2 hover:opacity-90">Create Post</a>
-      </ng-container>
-      <ng-template #guestMobileNav>
-        <a routerLink="/" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🏠 Home</a>
-        <a routerLink="/login" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🔐 Log in</a>
-        <a routerLink="/register" (click)="toggleMobileMenu()" class="bg-primary text-white font-semibold px-3 py-2 rounded-md text-center mt-2 hover:opacity-90">🚀 Create account</a>
-      </ng-template>
-    </nav>
-  </div>
-</header>
+          <nav class="flex flex-col space-y-2">
+            @if (currentUser$ | async; as user) {
+              <a routerLink="/" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🏠 Home</a>
+              <a routerLink="/reading-list" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">📚 Reading List</a>
+              <a routerLink="/tags" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">#️⃣ Tags</a>
+              <a routerLink="/about" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">📖 About</a>
+              <a routerLink="/settings" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">⚙️ Settings</a>
+              <button (click)="logout(); toggleMobileMenu()" class="text-left text-muted hover:text-red-500 hover:bg-background px-3 py-2 rounded-md transition-colors font-semibold">🚪 Sign out</button>
+              <a routerLink="/new" (click)="toggleMobileMenu()" class="bg-primary text-white font-semibold px-3 py-2 rounded-md text-center mt-2 hover:opacity-90">Create Post</a>
+            } @else {
+              <a routerLink="/" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🏠 Home</a>
+              <a routerLink="/login" (click)="toggleMobileMenu()" class="text-muted hover:text-main hover:bg-background px-3 py-2 rounded-md transition-colors">🔐 Log in</a>
+              <a routerLink="/register" (click)="toggleMobileMenu()" class="bg-primary text-white font-semibold px-3 py-2 rounded-md text-center mt-2 hover:opacity-90">🚀 Create account</a>
+            }
+          </nav>
+        </div>
+      }
+    </header>
 

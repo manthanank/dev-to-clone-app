@@ -5,22 +5,24 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <div *ngFor="let video of videos" class="bg-surface rounded-lg shadow-sm border border-border overflow-hidden group cursor-pointer transition-all hover:shadow-md">
-      <div class="relative h-48 bg-black group-hover:opacity-90 transition-opacity">
-        <img [src]="video.image" alt="Video cover" class="w-full h-full object-cover">
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-white/20 backdrop-blur-sm p-4 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+    @for (video of videos; track video) {
+      <div class="bg-surface rounded-lg shadow-sm border border-border overflow-hidden group cursor-pointer transition-all hover:shadow-md">
+        <div class="relative h-48 bg-black group-hover:opacity-90 transition-opacity">
+          <img [src]="video.image" alt="Video cover" class="w-full h-full object-cover">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-white/20 backdrop-blur-sm p-4 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
           </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">{{ video.duration }}</div>
         </div>
-        <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">{{ video.duration }}</div>
+        <div class="p-4">
+          <h3 class="font-bold text-main mb-2 leading-tight group-hover:text-primary transition-colors">{{ video.title }}</h3>
+          <p class="text-xs text-muted">{{ video.meta }}</p>
+        </div>
       </div>
-      <div class="p-4">
-        <h3 class="font-bold text-main mb-2 leading-tight group-hover:text-primary transition-colors">{{ video.title }}</h3>
-        <p class="text-xs text-muted">{{ video.meta }}</p>
-      </div>
-    </div>
+    }
   </div>
 </div>

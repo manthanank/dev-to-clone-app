@@ -20,9 +20,11 @@
         <h2 class="text-2xl font-bold mb-6 text-main">User Profile</h2>
 
         <form (ngSubmit)="saveProfile()" class="space-y-6">
-          <div *ngIf="saveMessage" class="bg-green-50 text-green-700 p-3 rounded-md border border-green-200 text-sm font-medium">
-            {{ saveMessage }}
-          </div>
+          @if (saveMessage) {
+            <div class="bg-green-50 text-green-700 p-3 rounded-md border border-green-200 text-sm font-medium">
+              {{ saveMessage }}
+            </div>
+          }
           <div>
             <label class="block text-sm font-bold text-main mb-2">Name</label>
             <input type="text" name="name" [(ngModel)]="name" class="w-full p-3 border border-border rounded-md focus:ring-2 focus:ring-primary bg-background text-main outline-none">
