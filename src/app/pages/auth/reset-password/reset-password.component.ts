@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styles: []
+    selector: 'app-reset-password',
+    templateUrl: './reset-password.component.html',
+    styles: [],
+    standalone: false
 })
 export class ResetPasswordComponent {
   password = '';

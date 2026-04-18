@@ -4,9 +4,10 @@ import { Post } from '../../models/post.interface';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-reading-list',
-  templateUrl: './reading-list.component.html',
-  styleUrls: ['./reading-list.component.scss']
+    selector: 'app-reading-list',
+    templateUrl: './reading-list.component.html',
+    styleUrls: ['./reading-list.component.scss'],
+    standalone: false
 })
 export class ReadingListComponent implements OnInit, OnDestroy {
   bookmarkedPosts: Post[] = [];

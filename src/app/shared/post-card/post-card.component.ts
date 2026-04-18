@@ -5,9 +5,10 @@ import { Post } from '../../models/post.interface';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-post-card',
-  templateUrl: './post-card.component.html',
-  styleUrls: ['./post-card.component.scss']
+    selector: 'app-post-card',
+    templateUrl: './post-card.component.html',
+    styleUrls: ['./post-card.component.scss'],
+    standalone: false
 })
 export class PostCardComponent implements OnDestroy {
   @Input() post!: Post;

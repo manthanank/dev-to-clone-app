@@ -7,9 +7,10 @@ import { Post } from '../../models/post.interface';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
-  selector: 'app-create-post',
-  templateUrl: './create-post.component.html',
-  styleUrls: ['./create-post.component.scss']
+    selector: 'app-create-post',
+    templateUrl: './create-post.component.html',
+    styleUrls: ['./create-post.component.scss'],
+    standalone: false
 })
 export class CreatePostComponent implements OnInit, OnDestroy {
   postForm!: FormGroup;

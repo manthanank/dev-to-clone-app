@@ -11,9 +11,10 @@ interface PodcastItem {
 }
 
 @Component({
-  selector: 'app-podcasts',
-  templateUrl: './podcasts.component.html',
-  styleUrls: ['./podcasts.component.scss']
+    selector: 'app-podcasts',
+    templateUrl: './podcasts.component.html',
+    styleUrls: ['./podcasts.component.scss'],
+    standalone: false
 })
 export class PodcastsComponent {
   podcasts: PodcastItem[] = [];

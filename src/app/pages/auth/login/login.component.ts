@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styles: []
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styles: [],
+    standalone: false
 })
 export class LoginComponent implements OnInit {
   email = '';

@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styles: []
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styles: [],
+    standalone: false
 })
 export class RegisterComponent implements OnInit {
   name = '';

@@ -10,9 +10,10 @@ interface VideoItem {
 }
 
 @Component({
-  selector: 'app-videos',
-  templateUrl: './videos.component.html',
-  styleUrls: ['./videos.component.scss']
+    selector: 'app-videos',
+    templateUrl: './videos.component.html',
+    styleUrls: ['./videos.component.scss'],
+    standalone: false
 })
 export class VideosComponent {
   videos: VideoItem[] = [];

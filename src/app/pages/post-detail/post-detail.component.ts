@@ -8,9 +8,10 @@ import { DataService } from '../../shared/data.service';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
-  selector: 'app-post-detail',
-  templateUrl: './post-detail.component.html',
-  styleUrls: ['./post-detail.component.scss']
+    selector: 'app-post-detail',
+    templateUrl: './post-detail.component.html',
+    styleUrls: ['./post-detail.component.scss'],
+    standalone: false
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   post: Post | undefined;
