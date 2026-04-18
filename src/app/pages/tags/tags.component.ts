@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { DataService } from '../../shared/data.service';
+import { DecimalPipe } from '@angular/common';
 
 interface TagInfo {
   name: string;
@@ -13,7 +14,7 @@ interface TagInfo {
     selector: 'app-tags',
     templateUrl: './tags.component.html',
     styleUrls: ['./tags.component.scss'],
-    standalone: false
+    imports: [DecimalPipe]
 })
 export class TagsComponent implements OnInit {
   followedTags: Set<string> = new Set<string>();

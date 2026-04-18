@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../core/auth.service';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
     styles: [],
-    standalone: false
+    imports: [RouterLink, FormsModule]
 })
 export class ForgotPasswordComponent {
   email = '';

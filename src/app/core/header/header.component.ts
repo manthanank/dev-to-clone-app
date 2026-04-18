@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ThemeService } from '../../shared/theme.service';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { User } from '../../models/user.interface';
+import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    standalone: false
+    imports: [RouterLink, FormsModule, AsyncPipe]
 })
 export class HeaderComponent implements OnInit {
   searchQuery: string = '';

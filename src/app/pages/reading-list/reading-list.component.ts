@@ -2,12 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../../shared/data.service';
 import { Post } from '../../models/post.interface';
 import { Subject, takeUntil } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { PostCardComponent } from '../../shared/post-card/post-card.component';
 
 @Component({
     selector: 'app-reading-list',
     templateUrl: './reading-list.component.html',
     styleUrls: ['./reading-list.component.scss'],
-    standalone: false
+    imports: [RouterLink, PostCardComponent]
 })
 export class ReadingListComponent implements OnInit, OnDestroy {
   bookmarkedPosts: Post[] = [];

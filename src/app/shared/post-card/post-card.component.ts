@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Post } from '../../models/post.interface';
 import { DataService } from '../data.service';
+import { NgClass, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-post-card',
     templateUrl: './post-card.component.html',
     styleUrls: ['./post-card.component.scss'],
-    standalone: false
+    imports: [NgClass, DatePipe]
 })
 export class PostCardComponent implements OnDestroy {
   @Input() post!: Post;

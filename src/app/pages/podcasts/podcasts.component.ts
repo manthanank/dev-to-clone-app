@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ApiConfigService } from '../../core/api-config.service';
+import { NgClass } from '@angular/common';
 
 interface PodcastItem {
   title: string;
@@ -14,7 +15,7 @@ interface PodcastItem {
     selector: 'app-podcasts',
     templateUrl: './podcasts.component.html',
     styleUrls: ['./podcasts.component.scss'],
-    standalone: false
+    imports: [NgClass]
 })
 export class PodcastsComponent {
   podcasts: PodcastItem[] = [];

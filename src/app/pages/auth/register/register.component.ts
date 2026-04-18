@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styles: [],
-    standalone: false
+    imports: [FormsModule, RouterLink]
 })
 export class RegisterComponent implements OnInit {
   name = '';

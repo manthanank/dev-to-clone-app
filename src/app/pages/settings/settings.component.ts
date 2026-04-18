@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/auth.service';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.interface';
+import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    standalone: false
+    imports: [FormsModule, AsyncPipe]
 })
 export class SettingsComponent implements OnInit {
   currentUser$!: Observable<User | null>;

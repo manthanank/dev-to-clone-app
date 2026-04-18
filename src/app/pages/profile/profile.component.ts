@@ -5,12 +5,14 @@ import { User } from '../../models/user.interface';
 import { Post } from '../../models/post.interface';
 import { DataService } from '../../shared/data.service';
 import { AuthService } from '../../core/auth.service';
+import { PostCardComponent } from '../../shared/post-card/post-card.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.scss'],
-    standalone: false
+    imports: [PostCardComponent, DatePipe]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   user: User | undefined;

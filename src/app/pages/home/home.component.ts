@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Post } from '../../models/post.interface';
 import { DataService } from '../../shared/data.service';
 import { AuthService } from '../../core/auth.service';
+import { NgClass } from '@angular/common';
+import { PostCardComponent } from '../../shared/post-card/post-card.component';
 
 interface TrendingItem {
   title: string;
@@ -21,7 +23,7 @@ interface SuggestedUser {
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: false
+    imports: [RouterLink, NgClass, PostCardComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   posts: Post[] = [];

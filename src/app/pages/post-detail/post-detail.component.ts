@@ -1,17 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Post } from '../../models/post.interface';
 import { Comment } from '../../models/comment.interface';
 import { User } from '../../models/user.interface';
 import { DataService } from '../../shared/data.service';
 import { AuthService } from '../../core/auth.service';
+import { NgClass, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-post-detail',
     templateUrl: './post-detail.component.html',
     styleUrls: ['./post-detail.component.scss'],
-    standalone: false
+    imports: [NgClass, RouterLink, FormsModule, DatePipe]
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   post: Post | undefined;

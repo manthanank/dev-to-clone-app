@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { PostDetailComponent } from './pages/post-detail/post-detail.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -18,7 +17,7 @@ import { ResetPasswordComponent } from './pages/auth/reset-password/reset-passwo
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { AuthGuard } from './core/auth.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'post/:id', component: PostDetailComponent },
   { path: 'user/:username', component: ProfileComponent },
@@ -36,9 +35,3 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', component: NotFoundComponent }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

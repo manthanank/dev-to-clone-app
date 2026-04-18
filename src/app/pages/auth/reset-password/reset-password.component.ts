@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styles: [],
-    standalone: false
+    imports: [FormsModule, RouterLink]
 })
 export class ResetPasswordComponent {
   password = '';
