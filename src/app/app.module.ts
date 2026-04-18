@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -27,36 +27,29 @@ import { ResetPasswordComponent } from './pages/auth/reset-password/reset-passwo
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    HomeComponent,
-    PostDetailComponent,
-    ProfileComponent,
-    PostCardComponent,
-    CreatePostComponent,
-    ReadingListComponent,
-    TagsComponent,
-    AboutComponent,
-    SettingsComponent,
-    ListingsComponent,
-    PodcastsComponent,
-    VideosComponent,
-    LoginComponent,
-    RegisterComponent,
-    ForgotPasswordComponent,
-    ResetPasswordComponent,
-    NotFoundComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        HeaderComponent,
+        HomeComponent,
+        PostDetailComponent,
+        ProfileComponent,
+        PostCardComponent,
+        CreatePostComponent,
+        ReadingListComponent,
+        TagsComponent,
+        AboutComponent,
+        SettingsComponent,
+        ListingsComponent,
+        PodcastsComponent,
+        VideosComponent,
+        LoginComponent,
+        RegisterComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent,
+        NotFoundComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
