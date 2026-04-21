@@ -1,64 +1,61 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataService } from '../../shared/data.service';
 import { Post } from '../../models/post.interface';
 import { AuthService } from '../../core/auth.service';
-import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-create-post',
-    templateUrl: './create-post.component.html',
-    styleUrls: ['./create-post.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, NgClass]
+  selector: 'app-create-post',
+  templateUrl: './create-post.component.html',
+  styleUrls: ['./create-post.component.css'],
+  imports: [FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreatePostComponent implements OnInit, OnDestroy {
-  postForm!: FormGroup;
-  submitting = false;
-  private destroy$ = new Subject<void>();
+export class CreatePostComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly dataService = inject(DataService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(
-    private fb: FormBuilder,
-    private dataService: DataService,
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  readonly postForm = signal<FormGroup>(null!);
+  readonly submitting = signal<boolean>(false);
 
-  ngOnInit(): void {
+  constructor() {
     this.initForm();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  ngOnInit(): void {}
 
   initForm(): void {
-    this.postForm = this.fb.group({
+    this.postForm.set(this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       coverImage: [''],
       content: ['', [Validators.required]],
       tags: [''],
       excerpt: ['', [Validators.maxLength(200)]]
-    });
+    }));
   }
 
   submitPost(): void {
-    if (this.postForm.invalid) {
+    const form = this.postForm();
+    if (form.invalid) {
+      form.markAllAsTouched();
       return;
     }
 
-    this.submitting = true;
-    const formValue = this.postForm.value;
+    this.submitting.set(true);
+    const formValue = form.value;
     const currentUser = this.authService.getCurrentUser();
+    
     if (!currentUser) {
-      this.submitting = false;
+      this.submitting.set(false);
       this.router.navigate(['/login'], { queryParams: { returnUrl: '/new' } });
       return;
     }
     
-    // Process tags (comma-separated string to array)
     const tagsArray = formValue.tags 
       ? formValue.tags.split(',').map((tag: string) => tag.trim().replace('#', ''))
       : [];
@@ -70,7 +67,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
       excerpt: formValue.excerpt || formValue.content.substring(0, 150) + '...',
       tags: tagsArray,
       publishedDate: new Date(),
-      readingTime: Math.ceil(formValue.content.split(' ').length / 200), // Approx reading time
+      readingTime: Math.ceil(formValue.content.split(' ').length / 200),
       likes: 0,
       comments: 0,
       bookmarks: 0,
@@ -78,21 +75,21 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         id: currentUser.id,
         name: currentUser.name,
         avatar: currentUser.avatar,
-        bio: currentUser.bio,
+        bio: currentUser.bio || '',
         username: currentUser.username
       }
     };
 
     this.dataService.createPost(newPost)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (post) => {
-          this.submitting = false;
+          this.submitting.set(false);
           this.router.navigate(['/post', post.id]);
         },
         error: (err) => {
           console.error('Error creating post:', err);
-          this.submitting = false;
+          this.submitting.set(false);
         }
       });
   }

@@ -1,107 +1,124 @@
-<div class="container mx-auto px-4 py-8 bg-background min-h-screen transition-colors duration-200">
-  <div class="max-w-4xl mx-auto">
-    <div class="bg-surface rounded-lg shadow-lg overflow-hidden border border-border">
-      <div class="p-8">
-        <div class="flex items-center justify-between mb-8">
-          <h1 class="text-3xl font-bold text-main">Create New Post</h1>
-          <button (click)="cancel()" class="text-muted hover:text-main">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+<div class="container mx-auto px-4 py-12 max-w-4xl transition-colors duration-200">
+  <div class="bg-surface rounded-2xl shadow-xl overflow-hidden border border-border animate-fade-in">
+    <div class="p-8 md:p-12">
+      <div class="flex items-center justify-between mb-10">
+        <h1 class="text-4xl font-black text-main">Create New Post</h1>
+        <button (click)="cancel()" class="p-2 rounded-full hover:bg-background text-muted hover:text-main transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="postForm()" (ngSubmit)="submitPost()" class="space-y-8">
+        <!-- Title -->
+        <div class="group">
+          <label for="title" class="block text-sm font-black text-muted uppercase tracking-widest mb-3">Post Title</label>
+          <input
+            type="text"
+            id="title"
+            formControlName="title"
+            placeholder="Give your post a catchy title..."
+            class="w-full px-0 py-4 bg-transparent border-b-2 border-border text-main focus:outline-none focus:border-primary transition-all text-3xl font-extrabold placeholder:text-muted/30"
+            [class.border-red-500]="postForm().get('title')?.invalid && postForm().get('title')?.touched"
+          >
+          @if (postForm().get('title')?.invalid && postForm().get('title')?.touched) {
+            <p class="text-red-500 text-xs font-bold mt-2">Title is required and should be at least 5 characters.</p>
+          }
         </div>
 
-        <form [formGroup]="postForm" (ngSubmit)="submitPost()">
-          <!-- Title -->
-          <div class="mb-6">
-            <label for="title" class="block text-sm font-semibold text-main mb-2">Title</label>
-            <input
-              type="text"
-              id="title"
-              formControlName="title"
-              placeholder="Post title (min 5 characters)"
-              class="w-full px-4 py-3 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xl font-bold"
-              [ngClass]="{'border-red-500': postForm.get('title')?.invalid && postForm.get('title')?.touched}"
+        <!-- Cover Image URL -->
+        <div class="group">
+          <label for="coverImage" class="block text-sm font-black text-muted uppercase tracking-widest mb-3">Cover Image URL</label>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <input
+                type="text"
+                id="coverImage"
+                formControlName="coverImage"
+                placeholder="https://example.com/beautiful-image.jpg"
+                class="w-full px-6 py-4 rounded-xl border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-mono text-sm"
               >
-            @if (postForm.get('title')?.invalid && postForm.get('title')?.touched) {
-              <div class="text-red-500 text-xs mt-1">
-                Title is required and should be at least 5 characters.
-              </div>
+            </div>
+            @if (postForm().get('coverImage')?.value) {
+                <div class="w-16 h-16 rounded-xl border border-border overflow-hidden bg-background">
+                    <img [src]="postForm().get('coverImage')?.value" alt="Preview" class="w-full h-full object-cover">
+                </div>
             }
           </div>
+        </div>
 
-          <!-- Cover Image URL -->
-          <div class="mb-6">
-            <label for="coverImage" class="block text-sm font-semibold text-main mb-2">Cover Image URL (Optional)</label>
-            <input
-              type="text"
-              id="coverImage"
-              formControlName="coverImage"
-              placeholder="https://example.com/image.jpg"
-              class="w-full px-4 py-2 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
-              >
-          </div>
-
-          <!-- Content -->
-          <div class="mb-6">
-            <label for="content" class="block text-sm font-semibold text-main mb-2">Content (Markdown supported)</label>
+        <!-- Content -->
+        <div class="group">
+          <label for="content" class="block text-sm font-black text-muted uppercase tracking-widest mb-3">Content (Markdown)</label>
+          <div class="relative">
             <textarea
               id="content"
               formControlName="content"
-              rows="15"
-              placeholder="Write your post content here..."
-              class="w-full px-4 py-3 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono"
-              [ngClass]="{'border-red-500': postForm.get('content')?.invalid && postForm.get('content')?.touched}"
+              rows="12"
+              placeholder="Write your amazing story here..."
+              class="w-full px-6 py-5 rounded-2xl border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-mono leading-relaxed"
+              [class.border-red-500]="postForm().get('content')?.invalid && postForm().get('content')?.touched"
             ></textarea>
-            @if (postForm.get('content')?.invalid && postForm.get('content')?.touched) {
-              <div class="text-red-500 text-xs mt-1">
-                Content is required.
-              </div>
-            }
+            <div class="absolute bottom-4 right-4 text-[10px] font-bold text-muted/50 uppercase tracking-tighter">Markdown Enabled</div>
           </div>
+          @if (postForm().get('content')?.invalid && postForm().get('content')?.touched) {
+            <p class="text-red-500 text-xs font-bold mt-2">Content is where the magic happens! Please add some.</p>
+          }
+        </div>
 
-          <!-- Tags -->
-          <div class="mb-6">
-            <label for="tags" class="block text-sm font-semibold text-main mb-2">Tags (comma separated)</label>
-            <input
-              type="text"
-              id="tags"
-              formControlName="tags"
-              placeholder="javascript, angular, tutorial"
-              class="w-full px-4 py-2 rounded-lg border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-          </div>
+        <!-- Tags -->
+        <div class="group">
+          <label for="tags" class="block text-sm font-black text-muted uppercase tracking-widest mb-3">Tags</label>
+          <input
+            type="text"
+            id="tags"
+            formControlName="tags"
+            placeholder="e.g. javascript, angular, tutorial"
+            class="w-full px-6 py-4 rounded-xl border border-border bg-background text-main focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          >
+          <p class="text-[10px] text-muted font-bold mt-2 uppercase tracking-wide">Separate tags with commas</p>
+        </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center space-x-4 pt-6 border-t border-border">
-            <button
-              type="submit"
-              [disabled]="postForm.invalid || submitting"
-              class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:opacity-90 focus:outline-none disabled:opacity-50 transition-all"
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between pt-10 border-t border-border">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="px-8 py-3.5 text-muted hover:text-main font-bold transition-all uppercase tracking-widest text-xs"
+          >
+            Discard
+          </button>
+          
+          <div class="flex gap-4">
+              <button
+                type="button"
+                [disabled]="submitting()"
+                class="px-8 py-3.5 bg-background border border-border text-main font-bold rounded-xl hover:bg-surface transition-all active:scale-95 text-sm"
               >
-              @if (!submitting) {
-                <span>Publish Post</span>
-              }
-              @if (submitting) {
-                <span class="flex items-center">
-                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Publishing...
-                </span>
-              }
-            </button>
-            <button
-              type="button"
-              (click)="cancel()"
-              class="px-8 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none transition-all"
+                Save Draft
+              </button>
+              
+              <button
+                type="submit"
+                [disabled]="postForm().invalid || submitting()"
+                class="px-10 py-3.5 bg-primary text-white font-black rounded-xl hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/30 transition-all active:scale-95 text-sm uppercase tracking-widest"
               >
-              Save Draft
-            </button>
+                @if (!submitting()) {
+                  <span>Publish Now</span>
+                } @else {
+                  <span class="flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Working...
+                  </span>
+                }
+              </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -4,168 +4,182 @@
     <div class="hidden md:block w-1/12">
       <div class="sticky top-20 flex flex-col items-center space-y-4">
         <button
-          class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-          [ngClass]="{'text-red-500': isLiked, 'text-gray-700 dark:text-gray-400': !isLiked}"
+          class="p-2 rounded-full hover:bg-background transition-colors"
+          [class.text-red-500]="isLiked()"
+          [class.text-muted]="!isLiked()"
           (click)="likePost()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [ngClass]="{'fill-current': isLiked, 'fill-none': !isLiked}" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [class.fill-current]="isLiked()" [class.fill-none]="!isLiked()" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </button>
-        <span class="text-sm dark:text-gray-300">{{ post?.likes }}</span>
+        <span class="text-sm text-main font-medium">{{ post()?.likes }}</span>
 
-        <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-400">
+        <button class="p-2 rounded-full hover:bg-background text-muted hover:text-main transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
         </button>
-        <span class="text-sm">{{ post?.comments }}</span>
+        <span class="text-sm text-main font-medium">{{ post()?.comments }}</span>
 
         <button
-          class="p-2 rounded-full hover:bg-gray-100"
-          [ngClass]="{'text-blue-600': isBookmarked}"
+          class="p-2 rounded-full hover:bg-background transition-colors"
+          [class.text-primary]="isBookmarked()"
+          [class.text-muted]="!isBookmarked()"
           (click)="bookmarkPost()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [ngClass]="{'fill-current': isBookmarked, 'fill-none': !isBookmarked}" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [class.fill-current]="isBookmarked()" [class.fill-none]="!isBookmarked()" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </button>
-        <span class="text-sm">{{ post?.bookmarks }}</span>
-
-        <button class="p-2 rounded-full hover:bg-gray-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-          </svg>
-        </button>
+        <span class="text-sm text-main font-medium">{{ post()?.bookmarks }}</span>
       </div>
     </div>
 
     <!-- Main Content -->
-    @if (post) {
+    @if (post(); as p) {
       <div class="w-full md:w-8/12 lg:w-7/12">
-        <div class="bg-surface rounded-lg shadow overflow-hidden border border-border">
+        <div class="bg-surface rounded-lg shadow overflow-hidden border border-border animate-fade-in">
           <!-- Cover Image -->
-          @if (post.coverImage) {
-            <img [src]="post.coverImage" alt="Cover" class="w-full h-72 object-cover">
+          @if (p.coverImage) {
+            <img [src]="p.coverImage" alt="Cover" class="w-full h-80 object-cover">
           }
           <!-- Post Content -->
-          <div class="p-8">
+          <div class="p-8 md:p-12">
             <!-- Author Info -->
-            <div class="flex items-center mb-6">
-              <img [src]="post.author.avatar" alt="Author" class="w-12 h-12 rounded-full mr-4 border border-border">
+            <div class="flex items-center mb-8">
+              <img [src]="p.author.avatar" alt="Author" class="w-12 h-12 rounded-full mr-4 border border-border">
               <div>
-                <a [routerLink]="['/user', post.author.username]" class="font-semibold text-lg hover:text-primary text-main">{{ post.author.name }}</a>
+                <a [routerLink]="['/user', p.author.username]" class="font-bold text-xl hover:text-primary text-main transition-colors">{{ p.author.name }}</a>
                 <p class="text-sm text-muted">
-                  {{ post.publishedDate | date:'MMM d, yyyy' }} • {{ post.readingTime }} min read
+                  {{ p.publishedDate | date:'MMM d, yyyy' }} • {{ p.readingTime }} min read
                 </p>
               </div>
             </div>
             <!-- Title -->
-            <h1 class="text-3xl md:text-4xl font-bold mb-6 text-main">{{ post.title }}</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-8 text-main leading-tight">{{ p.title }}</h1>
             <!-- Tags -->
-            <div class="flex flex-wrap mb-6">
-              @for (tag of post.tags; track tag) {
-                <span class="mr-2 mb-2 px-3 py-1 rounded-full bg-background border border-border text-sm text-muted hover:text-main hover:bg-surface cursor-pointer">#{{ tag }}</span>
+            <div class="flex flex-wrap mb-8">
+              @for (tag of p.tags; track tag) {
+                <span class="mr-3 mb-3 px-3 py-1 rounded-md bg-background border border-border text-sm text-muted hover:text-primary hover:border-primary cursor-pointer transition-all">#{{ tag }}</span>
               }
             </div>
             <!-- Content -->
-            <div class="prose dark:prose-invert max-w-none" [innerHTML]="post.content"></div>
+            <div class="prose max-w-none mb-12" [innerHTML]="p.content"></div>
+            
             <!-- Mobile Action Buttons -->
-            <div class="flex justify-between items-center mt-8 pt-4 border-t border-gray-200 md:hidden">
-              <div class="flex space-x-4">
+            <div class="flex justify-between items-center py-4 border-y border-border md:hidden mb-8">
+              <div class="flex space-x-6">
                 <button
-                  class="flex items-center space-x-1"
-                  [ngClass]="{'text-red-500': isLiked, 'text-gray-500': !isLiked}"
+                  class="flex items-center space-x-2 transition-colors"
+                  [class.text-red-500]="isLiked()"
+                  [class.text-muted]="!isLiked()"
                   (click)="likePost()">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [ngClass]="{'fill-current': isLiked, 'fill-none': !isLiked}" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [class.fill-current]="isLiked()" [class.fill-none]="!isLiked()" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <span>{{ post.likes }}</span>
+                  <span class="font-medium">{{ p.likes }}</span>
                 </button>
-                <button class="flex items-center space-x-1 text-gray-500">
+                <button class="flex items-center space-x-2 text-muted hover:text-main transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                  <span>{{ post.comments }}</span>
+                  <span class="font-medium">{{ p.comments }}</span>
                 </button>
               </div>
               <button
-                class="flex items-center space-x-1"
-                [ngClass]="{'text-blue-600': isBookmarked, 'text-gray-500': !isBookmarked}"
+                class="flex items-center space-x-2 transition-colors"
+                [class.text-primary]="isBookmarked()"
+                [class.text-muted]="!isBookmarked()"
                 (click)="bookmarkPost()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [ngClass]="{'fill-current': isBookmarked, 'fill-none': !isBookmarked}" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [class.fill-current]="isBookmarked()" [class.fill-none]="!isBookmarked()" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                 </svg>
-                <span>{{ isBookmarked ? 'Saved' : 'Save' }}</span>
+                <span class="font-medium">{{ isBookmarked() ? 'Saved' : 'Save' }}</span>
               </button>
             </div>
-            <!-- Author Bio -->
-            <div class="mt-12 p-6 bg-background rounded-lg border border-border">
-              <div class="flex">
-                <img [src]="post.author.avatar" alt="Author" class="w-16 h-16 rounded-full mr-4 border border-border">
-                <div>
-                  <a [routerLink]="['/user', post.author.username]" class="font-bold text-lg hover:text-primary text-main">{{ post.author.name }}</a>
-                  <p class="text-muted mt-1">{{ post.author.bio }}</p>
-                  <button (click)="followAuthor()" class="mt-3 px-4 py-2 bg-primary text-white font-semibold rounded-md hover:opacity-90 transition-opacity">Follow</button>
+
+            <!-- Author Bio Section -->
+            <div class="p-8 bg-background rounded-xl border border-border">
+              <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                <img [src]="p.author.avatar" alt="Author" class="w-20 h-20 rounded-full mb-4 sm:mb-0 sm:mr-6 border-2 border-primary/20 p-0.5">
+                <div class="flex-1">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+                    <a [routerLink]="['/user', p.author.username]" class="font-extrabold text-2xl hover:text-primary text-main transition-colors">{{ p.author.name }}</a>
+                    <button (click)="followAuthor()" class="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all active:scale-95">Follow</button>
+                  </div>
+                  <p class="text-secondary text-lg leading-relaxed">{{ author()?.bio || p.author.bio || 'Developer and tech enthusiast sharing thoughts on DEV Community.' }}</p>
+                  @if (author()) {
+                    <div class="flex items-center justify-center sm:justify-start gap-4 mt-4 text-sm text-muted">
+                        @if (author()?.location) { <span>📍 {{ author()?.location }}</span> }
+                        <span>📅 Joined {{ author()?.joinDate | date:'MMM yyyy' }}</span>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
-            <!-- Comments Section -->
-            <div class="mt-12">
-              <h2 class="text-2xl font-bold mb-6 text-main">Discussion ({{ comments.length }})</h2>
+
+            <!-- Discussion Section -->
+            <div class="mt-16">
+              <h2 class="text-3xl font-extrabold mb-8 text-main border-b border-border pb-4">Discussion ({{ comments().length }})</h2>
+              
               <!-- New Comment Form -->
-              <div class="mb-8">
-                <div class="flex">
-                  <img [src]="currentUserAvatar" alt="Your Avatar" class="w-10 h-10 rounded-full mr-4 border border-border">
+              <div class="mb-12 bg-background/50 p-6 rounded-xl border border-border">
+                <div class="flex gap-4">
+                  <img [src]="currentUserAvatar()" alt="User" class="w-12 h-12 rounded-full border border-border flex-shrink-0">
                   <div class="flex-1">
                     <textarea
-                      class="w-full p-4 border border-border bg-background text-main rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      rows="4"
-                      placeholder="Add to the discussion"
-                    [(ngModel)]="newCommentContent"></textarea>
-                    <button
-                      class="mt-2 px-4 py-2 bg-primary text-white font-semibold rounded-md hover:opacity-90 disabled:opacity-70 transition-all"
-                      [disabled]="!newCommentContent.trim()"
-                    (click)="submitComment()">Submit</button>
-                  </div>
-                </div>
-              </div>
-              <!-- Comments List -->
-              @if (loading) {
-                <div class="flex justify-center py-8">
-                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-                </div>
-              }
-              @if (!loading && comments.length === 0) {
-                <div class="text-center py-8 text-gray-600 dark:text-gray-400">
-                  No comments yet. Be the first to share what you think!
-                </div>
-              }
-              @for (comment of comments; track comment) {
-                <div class="mb-6 border-b border-gray-200 dark:border-gray-700 pb-6">
-                  <div class="flex">
-                    <img [src]="comment.author.avatar" alt="Commenter" class="w-10 h-10 rounded-full mr-4">
-                    <div class="flex-1">
-                      <div class="flex items-center mb-1">
-                        <span class="font-semibold mr-2 dark:text-white">{{ comment.author.name }}</span>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ comment.publishedDate | date:'MMM d' }}</span>
-                      </div>
-                      <div class="text-gray-800 dark:text-gray-300">
-                        {{ comment.content }}
-                      </div>
-                      <div class="mt-3 flex items-center space-x-4">
-                        <button
-                          class="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
-                          (click)="likeComment(comment.id)">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                          </svg>
-                          <span>{{ comment.likes }}</span>
-                        </button>
-                        <button class="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 text-sm">Reply</button>
-                      </div>
+                      class="w-full p-4 border border-border bg-surface text-main rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-muted"
+                      rows="3"
+                      placeholder="Add to the discussion..."
+                      [ngModel]="newCommentContent()"
+                      (ngModelChange)="newCommentContent.set($event)"></textarea>
+                    <div class="flex justify-end mt-3">
+                      <button
+                        class="px-8 py-2.5 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 transition-all active:scale-95"
+                        [disabled]="!newCommentContent().trim()"
+                        (click)="submitComment()">Post Comment</button>
                     </div>
                   </div>
                 </div>
-              }
+              </div>
+
+              <!-- Comments List -->
+              <div class="space-y-8">
+                @if (comments().length === 0) {
+                  <div class="text-center py-12 bg-background/30 rounded-xl border border-dashed border-border group">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">💬</div>
+                    <p class="text-muted font-medium">No comments yet. Be the first to share what you think!</p>
+                  </div>
+                }
+                @for (comment of comments(); track comment.id) {
+                  <div class="animate-fade-in group">
+                    <div class="flex gap-4">
+                      <img [src]="comment.author.avatar" alt="Avatar" class="w-10 h-10 rounded-full border border-border flex-shrink-0">
+                      <div class="flex-1 bg-surface group-hover:bg-background/20 p-5 rounded-2xl border border-border transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                          <div class="flex items-center gap-2">
+                            <span class="font-bold text-main">{{ comment.author.name }}</span>
+                            <span class="text-xs text-muted">• {{ comment.publishedDate | date:'MMM d' }}</span>
+                          </div>
+                        </div>
+                        <div class="text-secondary leading-relaxed mb-4">
+                          {{ comment.content }}
+                        </div>
+                        <div class="flex items-center gap-4">
+                          <button
+                            class="flex items-center gap-1.5 text-sm text-muted hover:text-red-500 transition-colors"
+                            (click)="likeComment(comment.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span class="font-medium">{{ comment.likes }}</span>
+                          </button>
+                          <button class="text-sm text-muted hover:text-primary font-medium transition-colors">Reply</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -174,28 +188,36 @@
 
     <!-- Right Sidebar -->
     <div class="hidden lg:block w-3/12 pl-8">
-      <div class="sticky top-20">
-        <div class="bg-surface rounded-lg shadow p-5 mb-6 border border-border">
-          <h3 class="text-lg font-bold mb-4 text-main">More from <a [routerLink]="['/user', post?.author?.username]" class="text-primary hover:underline">{{ post?.author?.name }}</a></h3>
-          <div class="space-y-4">
-            @for (relatedPost of relatedPosts; track relatedPost) {
-              <div class="border-b border-border last:border-0 pb-4 last:pb-0">
-                <a [routerLink]="['/post', relatedPost.id]" class="font-medium text-main hover:text-primary">{{ relatedPost.title }}</a>
-                <div class="flex items-center text-xs text-muted mt-1 space-x-1">
-                  <span>{{ relatedPost.readingTime }} min read</span>
-                  <span>•</span>
-                  <span>{{ relatedPost.publishedDate | date:'MMM d' }}</span>
+      <div class="sticky top-24 space-y-6">
+        <div class="bg-surface rounded-xl shadow-sm p-6 border border-border overflow-hidden">
+             <div class="h-1 bg-primary -mx-6 -mt-6 mb-6"></div>
+          <h3 class="text-lg font-extrabold mb-5 text-main">
+            More from <a [routerLink]="['/user', post()?.author?.username]" class="text-primary hover:underline">{{ post()?.author?.name }}</a>
+          </h3>
+          <div class="space-y-6">
+            @for (relatedPost of relatedPosts(); track relatedPost.id) {
+              <div class="group">
+                <a [routerLink]="['/post', relatedPost.id]" class="font-bold text-main group-hover:text-primary transition-colors leading-snug block mb-2">{{ relatedPost.title }}</a>
+                <div class="flex items-center text-xs text-muted gap-2">
+                    <div class="flex flex-wrap gap-1">
+                      @for (tag of relatedPost.tags.slice(0, 2); track tag) {
+                        <span>#{{ tag }}</span>
+                      }
+                    </div>
                 </div>
               </div>
+            }
+            @if (relatedPosts().length === 0) {
+              <p class="text-sm text-muted italic">No other recent posts found.</p>
             }
           </div>
         </div>
 
-        <div class="bg-surface rounded-lg shadow p-5 border border-border">
-          <h3 class="text-lg font-bold mb-4 text-main">Recommended Tags</h3>
-          <div class="space-y-1">
-            @for (tag of recommendedTags; track tag) {
-              <span class="block py-1 text-muted hover:text-primary cursor-pointer transition-colors">#{{ tag }}</span>
+        <div class="bg-surface rounded-xl shadow-sm p-6 border border-border">
+          <h3 class="text-lg font-extrabold mb-5 text-main">Recommended Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            @for (tag of recommendedTags(); track tag) {
+              <span (click)="router.navigate(['/'], { queryParams: { tag }})" class="px-3 py-1.5 text-sm bg-background border border-border rounded-lg text-muted hover:text-primary hover:border-primary cursor-pointer transition-all">#{{ tag }}</span>
             }
           </div>
         </div>
@@ -204,9 +226,13 @@
   </div>
 </div>
 
-<!-- Loading Spinner -->
-@if (loading && !post) {
-  <div class="flex justify-center py-16">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+<!-- Loading State Overlay -->
+@if (loading() && !post()) {
+  <div class="fixed inset-0 bg-background/50 backdrop-blur-sm z-[60] flex items-center justify-center animate-fade-in">
+    <div class="bg-surface p-8 rounded-2xl shadow-2xl border border-border flex flex-col items-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
+      <p class="text-main font-bold text-xl">Loading Article...</p>
+      <p class="text-muted text-sm mt-2">Fetching amazing content from DEV.TO</p>
+    </div>
   </div>
 }

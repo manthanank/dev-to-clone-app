@@ -1,24 +1,59 @@
 <div class="container mx-auto px-4 py-8 max-w-5xl transition-colors duration-200">
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-main mb-2">Podcasts</h1>
-    <p class="text-muted">Listen to the best developer stories and technical deep dives.</p>
+  <div class="mb-10">
+    <h1 class="text-4xl font-black text-main mb-2 tracking-tight">Podcasts</h1>
+    <p class="text-muted text-lg font-medium">Listen to the best developer stories and technical deep dives.</p>
   </div>
 
-  <div class="space-y-6">
-    @for (podcast of podcasts; track podcast) {
-      <div class="flex flex-col md:flex-row bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
-        <div class="md:w-48 h-48 flex items-center justify-center" [ngClass]="podcast.theme === 'blue' ? 'bg-blue-600/20' : 'bg-primary/20'">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-          </svg>
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center py-24 space-y-4">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <p class="text-muted font-medium animate-pulse">Tuning to the frequency...</p>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-8">
+      @for (podcast of podcasts(); track podcast.title) {
+        <div class="flex flex-col md:flex-row bg-surface rounded-2xl shadow-sm border border-border overflow-hidden transition-all hover:shadow-xl hover:border-primary/20 group">
+          <div class="md:w-56 h-56 flex items-center justify-center transition-colors shrink-0" 
+               [class]="podcast.theme === 'blue' ? 'bg-blue-600/10' : 'bg-primary/10'">
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 transition-transform group-hover:scale-110 duration-500" 
+                   [class]="podcast.theme === 'blue' ? 'text-blue-500' : 'text-primary'"
+                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <div class="bg-white rounded-full p-2 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-8 flex flex-col justify-center flex-grow">
+            <div class="mb-4">
+              <span class="text-[10px] font-black uppercase tracking-widest text-muted bg-background px-2 py-1 rounded-md border border-border inline-block mb-3">{{ podcast.meta }}</span>
+              <h3 class="text-2xl font-black text-main group-hover:text-primary transition-colors leading-tight">{{ podcast.title }}</h3>
+            </div>
+            <p class="text-secondary mb-8 leading-relaxed line-clamp-2">{{ podcast.description }}</p>
+            <div>
+              <button (click)="listenPodcast()" 
+                class="px-8 py-3.5 text-white font-extrabold rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2"
+                [class]="podcast.theme === 'blue' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' : 'bg-primary hover:bg-primary-hover shadow-primary/20'">
+                Listen Now
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="p-6 flex-grow">
-          <h3 class="text-xl font-bold text-main mb-1">{{ podcast.title }}</h3>
-          <p class="text-muted mb-4 text-sm font-medium">{{ podcast.meta }}</p>
-          <p class="text-muted mb-6">{{ podcast.description }}</p>
-          <button (click)="listenPodcast()" class="px-6 py-2 text-white font-bold rounded" [ngClass]="podcast.theme === 'blue' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-primary hover:opacity-90 transition-opacity'">Listen Now</button>
-        </div>
+      }
+    </div>
+
+    @if (podcasts().length === 0) {
+      <div class="text-center py-24 bg-surface rounded-3xl border-2 border-dashed border-border">
+         <div class="text-7xl mb-6">📡</div>
+         <h2 class="text-3xl font-black text-main mb-2">No signals detected</h2>
+         <p class="text-muted max-w-md mx-auto font-medium">We couldn't find any podcast episodes right now. Trying adjusting your antenna and checking back soon!</p>
       </div>
     }
-  </div>
+  }
 </div>

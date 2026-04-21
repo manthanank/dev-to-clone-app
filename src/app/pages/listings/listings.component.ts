@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ApiConfigService } from '../../core/api-config.service';
+import { ApiConfigService } from '../../core/api-config';
 
 interface ListingItem {
   type: string;

@@ -1,73 +1,72 @@
 @import "tailwindcss";
 
-
-/* Global Styles */
-:root {
-  --bg-app: #f3f4f6;
-  --bg-card: #ffffff;
-  --bg-header: #ffffff;
-  --text-main: #111827;
-  --text-muted: #4b5563;
-  --border-main: #e5e7eb;
-  --primary: #7c3aed;
-  --accent: #2563eb;
+@theme {
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-secondary: #4b5563;
+  --color-background: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-header: #ffffff;
+  --color-main: #111827;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
 }
 
 .dark {
-  --bg-app: #000000;
-  --bg-card: #1f2937;
-  --bg-header: #111827;
-  --text-main: #f9fafb;
-  --text-muted: #9ca3af;
-  --border-main: #374151;
-  --primary: #a78bfa;
-  --accent: #60a5fa;
+  --color-primary: #a78bfa;
+  --color-primary-hover: #c4b5fd;
+  --color-secondary: #9ca3af;
+  --color-background: #000000;
+  --color-surface: #111827;
+  --color-header: #000000;
+  --color-main: #f9fafb;
+  --color-muted: #9ca3af;
+  --color-border: #374151;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  @apply bg-[var(--bg-app)] text-[var(--text-main)] transition-colors duration-200;
+@utility bg-app {
+  background-color: var(--color-background);
 }
 
-/* For better typography in content */
-.prose {
-  @apply text-gray-800 leading-relaxed;
+@utility bg-surface {
+  background-color: var(--color-surface);
 }
 
-.prose h2 {
-  @apply text-2xl font-bold mt-6 mb-4;
+@utility bg-header {
+  background-color: var(--color-header);
 }
 
-.prose h3 {
-  @apply text-xl font-bold mt-6 mb-3;
+@utility text-main {
+  color: var(--color-main);
 }
 
-.prose p {
-  @apply my-4;
+@utility text-secondary {
+  color: var(--color-secondary);
 }
 
-.prose pre {
-  @apply bg-gray-100 p-4 rounded-md overflow-auto my-4;
+@utility text-muted {
+  color: var(--color-muted);
 }
 
-.prose code {
-  @apply font-mono text-sm;
+@utility border-border {
+  border-color: var(--color-border);
 }
 
-.prose ul, .prose ol {
-  @apply pl-6 my-4;
+@layer base {
+  body {
+    @apply bg-app text-main transition-colors duration-200 antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
 }
 
-.prose ul {
-  @apply list-disc;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.prose ol {
-  @apply list-decimal;
-}
-
-.prose a {
-  @apply text-blue-600 hover:underline;
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 /* Custom scrollbar */
@@ -77,20 +76,24 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--bg-app);
+  @apply bg-app;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--text-muted);
-  border-radius: 4px;
+  @apply bg-muted/30 rounded-full hover:bg-muted/50 transition-colors;
 }
 
-/* Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+/* Typography for content */
+.prose {
+  @apply text-main leading-relaxed;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
+.prose h1 { @apply text-3xl font-extrabold mb-6; }
+.prose h2 { @apply text-2xl font-bold mt-8 mb-4; }
+.prose h3 { @apply text-xl font-bold mt-6 mb-3; }
+.prose p { @apply my-4; }
+.prose a { @apply text-primary hover:underline; }
+.prose pre { @apply bg-black/90 p-4 rounded-lg overflow-auto my-6 text-white; }
+.prose code { @apply font-mono text-sm px-1 py-0.5 rounded bg-muted/10; }
+.prose ul { @apply list-disc pl-6 my-4; }
+.prose ol { @apply list-decimal pl-6 my-4; }

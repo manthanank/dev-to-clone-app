@@ -1,20 +1,23 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, Renderer2, RendererFactory2, inject, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
-  private renderer: Renderer2;
-  private isDarkMode = new BehaviorSubject<boolean>(false);
-  isDarkMode$ = this.isDarkMode.asObservable();
+  private readonly rendererFactory = inject(RendererFactory2);
+  private readonly renderer: Renderer2;
+  
+  private readonly _isDarkMode = signal<boolean>(false);
+  readonly isDarkMode = this._isDarkMode.asReadonly();
 
-  constructor(rendererFactory: RendererFactory2) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+  constructor() {
+    this.renderer = this.rendererFactory.createRenderer(null, null);
     
     // Initialize theme from localStorage
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       this.enableDarkMode();
     } else {
       this.disableDarkMode();
@@ -22,7 +25,7 @@ export class ThemeService {
   }
 
   toggleTheme(): void {
-    if (this.isDarkMode.value) {
+    if (this._isDarkMode()) {
       this.disableDarkMode();
     } else {
       this.enableDarkMode();
@@ -32,12 +35,12 @@ export class ThemeService {
   private enableDarkMode(): void {
     this.renderer.addClass(document.documentElement, 'dark');
     localStorage.setItem('theme', 'dark');
-    this.isDarkMode.next(true);
+    this._isDarkMode.set(true);
   }
 
   private disableDarkMode(): void {
     this.renderer.removeClass(document.documentElement, 'dark');
     localStorage.setItem('theme', 'light');
-    this.isDarkMode.next(false);
+    this._isDarkMode.set(false);
   }
 }

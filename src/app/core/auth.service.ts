@@ -1,27 +1,31 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { User } from '../models/user.interface';
-import { ApiConfigService } from './api-config.service';
+import { ApiConfigService } from './api-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+  private readonly apiConfig = inject(ApiConfigService);
+  
   private readonly currentUserStorageKey = 'current_user';
   private readonly resetEmailStorageKey = 'reset_email';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
+  
+  private readonly _currentUser = signal<User | null>(null);
+  readonly currentUser = this._currentUser.asReadonly();
 
-  constructor(private http: HttpClient, private apiConfig: ApiConfigService) {
+  constructor() {
     this.initUser();
   }
 
   private initUser(): void {
     const savedUser = localStorage.getItem(this.currentUserStorageKey);
     if (savedUser) {
-      this.currentUserSubject.next(JSON.parse(savedUser));
+      this._currentUser.set(JSON.parse(savedUser));
     } else if (this.apiConfig.getApiKey()) {
       // Fetch the real user associated with this API Key
       this.http.get<any>(`${this.apiConfig.apiUrl}/users/me`, { headers: this.apiConfig.getHeaders() }).pipe(
@@ -41,22 +45,22 @@ export class AuthService {
         }),
         catchError(err => {
           console.error('Error fetching authenticated user:', err);
-          this.currentUserSubject.next(null);
+          this._currentUser.set(null);
           return of(null);
         })
       ).subscribe();
     } else {
-      this.currentUserSubject.next(null);
+      this._currentUser.set(null);
     }
   }
 
   public updateUser(user: User): void {
     localStorage.setItem(this.currentUserStorageKey, JSON.stringify(user));
-    this.currentUserSubject.next(user);
+    this._currentUser.set(user);
   }
 
   public updateCurrentUser(userPatch: Partial<User>): void {
-    const currentUser = this.getCurrentUser();
+    const currentUser = this._currentUser();
     if (!currentUser) {
       return;
     }
@@ -136,11 +140,11 @@ export class AuthService {
   }
 
   public getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
+    return this._currentUser();
   }
 
   public logout(): void {
     localStorage.removeItem(this.currentUserStorageKey);
-    this.currentUserSubject.next(null);
+    this._currentUser.set(null);
   }
 }

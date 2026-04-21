@@ -1,17 +1,21 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet, RouterLink } from '@angular/router';
+import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/header/header.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  imports: [HeaderComponent, RouterOutlet, RouterLink]
+  imports: [RouterOutlet, HeaderComponent],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class App {
+  private readonly router = inject(Router);
+  protected readonly title = signal('dev-to-clone-app');
+
   isAuthPage = false;
 
-  constructor(private router: Router) {
+  constructor() {
     this.updateRouteFlags(this.router.url);
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Post } from '../../models/post.interface';
 import { Comment } from '../../models/comment.interface';
 import { User } from '../../models/user.interface';
@@ -10,140 +10,125 @@ import { NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-post-detail',
-    templateUrl: './post-detail.component.html',
-    styleUrls: ['./post-detail.component.css'],
-    imports: [NgClass, RouterLink, FormsModule, DatePipe]
+  selector: 'app-post-detail',
+  templateUrl: './post-detail.component.html',
+  styleUrls: ['./post-detail.component.css'],
+  imports: [RouterLink, FormsModule, DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PostDetailComponent implements OnInit, OnDestroy {
-  post: Post | undefined;
-  author: User | undefined;
-  comments: Comment[] = [];
-  relatedPosts: Post[] = [];
-  recommendedTags: string[] = [];
-  loading: boolean = true;
-  isLiked: boolean = false;
-  isBookmarked: boolean = false;
-  newCommentContent: string = '';
-  private destroy$ = new Subject<void>();
-  private postId: number = 0;
+export class PostDetailComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly dataService = inject(DataService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  protected readonly router = inject(Router);
 
-  get currentUserAvatar(): string {
-    return this.authService.getCurrentUser()?.avatar || this.post?.author?.avatar || '';
-  }
+  readonly post = signal<Post | undefined>(undefined);
+  readonly author = signal<User | undefined>(undefined);
+  readonly comments = signal<Comment[]>([]);
+  readonly relatedPosts = signal<Post[]>([]);
+  readonly recommendedTags = signal<string[]>([]);
+  readonly loading = signal<boolean>(true);
+  readonly isLiked = signal<boolean>(false);
+  readonly isBookmarked = signal<boolean>(false);
+  readonly newCommentContent = signal<string>('');
+  
+  readonly currentUserAvatar = computed(() => {
+    return this.authService.currentUser()?.avatar || this.post()?.author?.avatar || '';
+  });
 
-  constructor(
-    private route: ActivatedRoute,
-    private dataService: DataService,
-    private authService: AuthService,
-    private router: Router
-  ) { }
-
-  ngOnInit(): void {
+  constructor() {
     this.route.params
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
-        this.postId = Number(params['id']);
-        if (this.postId) {
-          this.loadPostDetails(this.postId);
+        const id = Number(params['id']);
+        if (id) {
+          this.loadPostDetails(id);
+        } else {
+          this.router.navigate(['/']);
         }
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   loadPostDetails(postId: number): void {
-    this.loading = true;
+    this.loading.set(true);
+    this.post.set(undefined);
+    this.author.set(undefined);
+    this.comments.set([]);
+    this.relatedPosts.set([]);
 
-    // Load post from DEV.TO API
     this.dataService.getPostById(postId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (post) => {
           if (post) {
-            this.post = post;
+            this.post.set(post);
+            this.isBookmarked.set(this.dataService.isBookmarked(post.id));
 
-            // The author is already included in the post from the API
-            // but we can make a separate call to get more author details if needed
             if (post.author.username) {
               this.dataService.getUserByUsername(post.author.username)
-                .pipe(takeUntil(this.destroy$))
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
-                  next: user => {
-                    if (user) {
-                      this.author = user;
-                    }
-                  },
+                  next: user => this.author.set(user),
                   error: err => console.error('Error fetching author details:', err)
                 });
             }
 
-            // Load related posts by tag (get the first tag if available)
             if (post.tags && post.tags.length > 0) {
               this.loadRelatedPostsByTag(post.tags[0], postId);
-              this.recommendedTags = [...post.tags];
+              this.recommendedTags.set([...post.tags]);
             }
 
-            // Load comments
             this.loadComments(postId);
           } else {
-            // Handle case when post is not found
             console.error('Post not found');
             this.router.navigate(['/']);
           }
-          this.loading = false;
+          this.loading.set(false);
         },
         error: (error) => {
           console.error('Error fetching post:', error);
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate(['/']);
         }
       });
   }
 
   loadComments(postId: number): void {
-    // DEV.TO API doesn't provide comments directly, so we're using our existing mock data
     this.dataService.getCommentsByPost(postId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (comments) => {
-          this.comments = comments;
-        },
-        error: (error) => {
-          console.error('Error fetching comments:', error);
-        }
+        next: (comments) => this.comments.set(comments),
+        error: (error) => console.error('Error fetching comments:', error)
       });
   }
 
   loadRelatedPostsByTag(tag: string, currentPostId: number): void {
     this.dataService.getPostsByTag(tag)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (posts) => {
-          // Filter out the current post and limit to 3 related posts
-          this.relatedPosts = posts
-            .filter(post => post.id !== currentPostId)
-            .slice(0, 3);
+          this.relatedPosts.set(posts
+            .filter(p => p.id !== currentPostId)
+            .slice(0, 3));
         },
         error: (error) => {
           console.error('Error fetching related posts:', error);
-          this.relatedPosts = [];
+          this.relatedPosts.set([]);
         }
       });
   }
 
   likePost(): void {
-    if (this.post && !this.isLiked) {
-      this.dataService.likePost(this.post.id)
-        .pipe(takeUntil(this.destroy$))
+    const p = this.post();
+    if (p && !this.isLiked()) {
+      this.dataService.likePost(p.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (updatedPost) => {
             if (updatedPost) {
-              this.post = updatedPost;
-              this.isLiked = true;
+              this.post.set(updatedPost);
+              this.isLiked.set(true);
             }
           },
           error: (error) => console.error('Error liking post:', error)
@@ -152,14 +137,15 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   bookmarkPost(): void {
-    if (this.post && !this.isBookmarked) {
-      this.dataService.bookmarkPost(this.post.id)
-        .pipe(takeUntil(this.destroy$))
+    const p = this.post();
+    if (p) {
+      this.dataService.bookmarkPost(p.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (updatedPost) => {
             if (updatedPost) {
-              this.post = updatedPost;
-              this.isBookmarked = true;
+              this.post.set(updatedPost);
+              this.isBookmarked.set(this.dataService.isBookmarked(p.id));
             }
           },
           error: (error) => console.error('Error bookmarking post:', error)
@@ -168,7 +154,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   submitComment(): void {
-    if (!this.post || !this.newCommentContent.trim()) return;
+    const p = this.post();
+    if (!p || !this.newCommentContent().trim()) return;
+    
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
@@ -176,8 +164,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
 
     const newComment: Omit<Comment, 'id'> = {
-      postId: this.post.id,
-      content: this.newCommentContent.trim(),
+      postId: p.id,
+      content: this.newCommentContent().trim(),
       publishedDate: new Date(),
       likes: 0,
       author: {
@@ -188,42 +176,36 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     };
 
     this.dataService.createComment(newComment)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (comment) => {
-          this.comments.unshift(comment);
-          this.newCommentContent = '';
-          if (this.post) {
-            this.post.comments += 1;
-          }
+          this.comments.update(old => [comment, ...old]);
+          this.newCommentContent.set('');
+          this.post.update(old => old ? { ...old, comments: old.comments + 1 } : undefined);
         },
         error: (error) => console.error('Error posting comment:', error)
       });
   }
 
   followAuthor(): void {
-    if (!this.post?.author.username) {
-      return;
-    }
+    const p = this.post();
+    if (!p?.author.username) return;
 
     if (!this.authService.getCurrentUser()) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
       return;
     }
 
-    this.router.navigate(['/user', this.post.author.username]);
+    this.router.navigate(['/user', p.author.username]);
   }
 
   likeComment(commentId: number): void {
     this.dataService.likeComment(commentId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updatedComment) => {
           if (updatedComment) {
-            const index = this.comments.findIndex(c => c.id === commentId);
-            if (index !== -1) {
-              this.comments[index] = updatedComment;
-            }
+            this.comments.update(old => old.map(c => c.id === commentId ? updatedComment : c));
           }
         },
         error: (error) => console.error('Error liking comment:', error)

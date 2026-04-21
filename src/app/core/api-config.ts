@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -16,7 +16,8 @@ export class ApiConfigService {
 
   getApiKey(): string {
     const storedKey = localStorage.getItem(this.apiKeyStorageKey)?.trim();
-    return storedKey || environment.apiKey || '';
+    if (storedKey) return storedKey;
+    return environment.apiKey || '';
   }
 
   setApiKey(apiKey: string): void {
@@ -45,7 +46,8 @@ export class ApiConfigService {
     });
 
     const apiKey = this.getApiKey();
-    if (apiKey) {
+    // Only set the header if apiKey is not empty
+    if (apiKey && apiKey.length > 0) {
       headers = headers.set('api-key', apiKey);
     }
 

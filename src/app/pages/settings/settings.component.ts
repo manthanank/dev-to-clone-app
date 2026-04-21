@@ -1,56 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { AuthService } from '../../core/auth.service';
-import { Observable } from 'rxjs';
-import { User } from '../../models/user.interface';
 import { FormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.css'],
-    imports: [FormsModule, AsyncPipe]
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.css'],
+  imports: [FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit {
-  currentUser$!: Observable<User | null>;
-  name = '';
-  email = '';
-  username = '';
-  avatar = '';
-  bio = '';
-  apiUrl = '';
-  apiKey = '';
-  saveMessage = '';
+  protected readonly authService = inject(AuthService);
 
-  constructor(public authService: AuthService) {}
+  readonly name = signal('');
+  readonly email = signal('');
+  readonly username = signal('');
+  readonly avatar = signal('');
+  readonly bio = signal('');
+  readonly apiUrl = signal('');
+  readonly apiKey = signal('');
+  readonly saveMessage = signal('');
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.currentUser$ = this.authService.currentUser$;
-    this.apiUrl = this.authService.getApiUrl();
-    this.apiKey = this.authService.getApiKey();
-    this.currentUser$.subscribe(user => {
-      if (!user) {
-        return;
-      }
-
-      this.name = user.name;
-      this.email = user.email;
-      this.username = user.username;
-      this.avatar = user.avatar || '';
-      this.bio = user.bio || '';
-    });
+    this.apiUrl.set(this.authService.getApiUrl());
+    this.apiKey.set(this.authService.getApiKey());
+    
+    // Using an effect or direct subscription for signals-based auth
+    const user = this.authService.currentUser();
+    if (user) {
+      this.name.set(user.name);
+      this.email.set(user.email);
+      this.username.set(user.username);
+      this.avatar.set(user.avatar || '');
+      this.bio.set(user.bio || '');
+    }
   }
 
   saveProfile(): void {
-    this.authService.setApiUrl(this.apiUrl);
-    this.authService.setApiKey(this.apiKey);
+    this.authService.setApiUrl(this.apiUrl().trim());
+    this.authService.setApiKey(this.apiKey().trim());
     this.authService.updateCurrentUser({
-      name: this.name.trim(),
-      email: this.email.trim(),
-      username: this.username.trim(),
-      avatar: this.avatar.trim(),
-      bio: this.bio.trim()
+      name: this.name().trim(),
+      email: this.email().trim(),
+      username: this.username().trim(),
+      avatar: this.avatar().trim(),
+      bio: this.bio().trim()
     });
-    this.saveMessage = 'Profile saved successfully.';
+    this.saveMessage.set('Profile saved successfully.');
+    setTimeout(() => this.saveMessage.set(''), 3000);
   }
 }

@@ -1,60 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styles: [],
-    imports: [FormsModule, RouterLink]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  imports: [FormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
-  email = '';
-  password = '';
-  isLoading = false;
-  errorMessage = '';
-  socialLoginMessage = '';
-  private returnUrl = '/';
+  private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(
-    private authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
-    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
-  }
+  readonly email = signal('');
+  readonly password = signal('');
+  readonly isLoading = signal(false);
+  readonly errorMessage = signal('');
+  readonly socialLoginMessage = signal('');
+  
+  private readonly returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+
+  constructor() {}
 
   ngOnInit(): void {
-    // Redirect already-logged-in users
     if (this.authService.getCurrentUser()) {
       this.router.navigateByUrl(this.returnUrl);
     }
   }
 
   onSocialLogin(provider: string): void {
-    this.socialLoginMessage = `${provider === 'github' ? 'GitHub' : 'Twitter'} OAuth is not available in this demo. Please use email & password.`;
-    setTimeout(() => this.socialLoginMessage = '', 4000);
+    const name = provider === 'github' ? 'GitHub' : 'Twitter';
+    this.socialLoginMessage.set(`${name} OAuth is currently being integrated. Please use email & password for immediate access.`);
+    setTimeout(() => this.socialLoginMessage.set(''), 5000);
   }
 
   onSubmit(): void {
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Please fill in all fields';
+    const e = this.email().trim();
+    const p = this.password().trim();
+
+    if (!e || !p) {
+      this.errorMessage.set('Please enter both email and password to proceed.');
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
-    this.authService.login(this.email, this.password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigateByUrl(this.returnUrl);
-      },
-      error: () => {
-        this.isLoading = false;
-        this.errorMessage = 'Unable to login. Please try again.';
-      }
-    });
+    this.authService.login(e, p)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        error: (err) => {
+          console.error('Login error:', err);
+          this.isLoading.set(false);
+          this.errorMessage.set('Verification failed. Please check your credentials and try again.');
+        }
+      });
   }
 }

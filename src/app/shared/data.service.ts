@@ -1,16 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Post } from '../models/post.interface';
 import { User } from '../models/user.interface';
 import { Comment } from '../models/comment.interface';
-import { ApiConfigService } from '../core/api-config.service';
+import { ApiConfigService } from '../core/api-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  private readonly http = inject(HttpClient);
+  private readonly apiConfig = inject(ApiConfigService);
+  
   private readonly bookmarkStorageKey = 'devto_bookmarks';
 
   private get apiUrl(): string {
@@ -27,7 +30,7 @@ export class DataService {
 
   private bookmarkedIds: number[] = [];
 
-  constructor(private http: HttpClient, private apiConfig: ApiConfigService) {
+  constructor() {
     this.loadBookmarksFromStorage();
   }
 
